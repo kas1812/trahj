@@ -7,22 +7,18 @@ def potential_function(k):
     V = -k / r 
     F_x = -sp.diff(V, x)
     F_y = -sp.diff(V, y)
-    print("force_x:", F_x)
-    print("force_y:", F_y)
     potential_eval = sp.lambdify((x, y), V, 'numpy')
     force_eval_x = sp.lambdify((x, y), F_x, 'numpy')
     force_eval_y = sp.lambdify((x, y), F_y, 'numpy')
-    
     return potential_eval, force_eval_x, force_eval_y
-
-vsx = []
-vsy =[]
-E = [0]
 dt = 0.01
 def generate_data(k=3, x=1.0, y=0.0, vx=0.0, vy=1.7, dt=0.01):
     rs = [np.sqrt(x**2 + y**2)]
     x_values = [x]
     y_values = [y]
+    vsx = []
+    vsy =[]
+    E = [0]
     potential_eval, force_eval_x, force_eval_y = potential_function(k)
 
     a_x = force_eval_x(x, y)
@@ -42,40 +38,8 @@ def generate_data(k=3, x=1.0, y=0.0, vx=0.0, vy=1.7, dt=0.01):
         rs.append(r_new)
         vsx.append(vx)
         vsy.append(vy)
+
+    E_targets = np.random.uniform(-3, -1, 100)
+    vy = np.sqrt(2*(E_targets + k/np.sqrt(x**2 + y**2)))
     return x_values, y_values, rs, vsx, vsy, E
-
-fig, axes = plt.subplots(1, 2, figsize=(12, 5))
 x_values, y_values, rs, vsx, vsy, E = generate_data()
-time_values = np.arange(len(rs)) * dt
-
-axes[0].plot(x_values, y_values, color='tab:blue', linewidth=2)
-axes[0].set_xlabel('x position (m)')
-axes[0].set_ylabel('y position (m)')
-axes[0].set_title('Trajectory of a Particle in a Gravitational Potential')
-axes[0].set_aspect('equal', adjustable='box')
-axes[0].grid(True)
-
-axes[1].plot(time_values, rs, color='tab:orange', linewidth=2)
-axes[1].set_xlabel('time (s)')
-axes[1].set_ylabel('radius r (m)')
-axes[1].set_title('Radial Distance vs Time')
-axes[1].grid(True)
-
-Energy_steps = np.arange(len(E))
-plt.figure(figsize=(6, 4))  
-plt.plot(rs, E, color='tab:purple', linewidth=2)
-plt.xlabel('r')
-plt.ylabel('energy E')
-plt.title('Total Energy vs Time')
-plt.grid(True)
-"""acc_steps = np.arange(len(acx))
-axes[2].plot(acc_steps, acx, color='tab:red', linewidth=2)
-axes[2].set_xlabel('time step')
-axes[2].set_ylabel('acceleration a_x')
-axes[2].set_title('X-component of Acceleration')
-axes[2].grid(True)
-
-axes[3].plot(acc_steps, acy, color='tab:green', linewidth=2)
-axes[3].set_xlabel('time step')
-plt.tight_layout()"""
-plt.show()
