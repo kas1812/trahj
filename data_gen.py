@@ -38,8 +38,15 @@ def generate_data(k=3, x=1.0, y=0.0, vx=0.0, vy=1.7, dt=0.01):
         rs.append(r_new)
         vsx.append(vx)
         vsy.append(vy)
-
-    E_targets = np.random.uniform(-3, -1, 100)
-    vy = np.sqrt(2*(E_targets + k/np.sqrt(x**2 + y**2)))
     return x_values, y_values, rs, vsx, vsy, E
-x_values, y_values, rs, vsx, vsy, E = generate_data()
+
+def traj_fam():
+    num_targets = 100
+    trajs = []
+    for i in range(num_targets):
+        E_target = np.random.uniform(-3, -1)
+        vy = np.sqrt(2*(E_target + 3/np.sqrt(1**2 + 0.0**2)))
+        x_values, y_values, rs, vsx, vsy, E = generate_data(k=3, x=1.0, y=0.0, vx=0.0, vy=vy, dt=0.01)
+        trajs.append((x_values, y_values, rs, vsx, vsy, E))
+    return trajs
+
