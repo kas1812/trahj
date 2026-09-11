@@ -23,23 +23,25 @@ dt = 0.01
 x, y = 1.0, 0.0
 x_values = [x]
 y_values = [y]
-rs = []
-vx, vy = 0.1, 0.0
+rs = [np.sqrt(x**2 + y**2)]
+vx, vy = 0.0, 0.5
 vsx = []
 vsy =[]
+E = [0]
 potential_eval, force_eval_x, force_eval_y = potential_function(k)
 
 a_x = force_eval_x(x, y)
 a_y = force_eval_y(x, y)
-for i in range(200):
+for i in range(600):
     x += vx*dt + 0.5 * a_x * dt**2
     y += vy*dt + 0.5 * a_y * dt**2
     ax_new = force_eval_x(x, y)
     ay_new = force_eval_y(x, y)
     vx += 0.5 * (a_x + ax_new) * dt
     vy += 0.5 * (a_y + ay_new) * dt
-    ax, ay = ax_new, ay_new
+    a_x, a_y = ax_new, ay_new
     r_new= np.sqrt(np.array(x)**2 + np.array(y)**2)
+    E.append(0.5 * (vx**2 + vy**2) + potential_eval(x, y))
     x_values.append(x)
     y_values.append(y)
     rs.append(r_new)
@@ -50,19 +52,28 @@ for i in range(200):
 
 fig, axes = plt.subplots(1, 2, figsize=(12, 5))
 
+time_values = np.arange(len(rs)) * dt
+
 axes[0].plot(x_values, y_values, color='tab:blue', linewidth=2)
 axes[0].set_xlabel('x position (m)')
 axes[0].set_ylabel('y position (m)')
 axes[0].set_title('Trajectory of a Particle in a Gravitational Potential')
+axes[0].set_aspect('equal', adjustable='box')
 axes[0].grid(True)
 
-radius_steps = np.arange(len(rs))
-axes[1].plot(radius_steps, rs, color='tab:orange', linewidth=2)
-axes[1].set_xlabel('time step')
-axes[1].set_ylabel('radius r')
+axes[1].plot(time_values, rs, color='tab:orange', linewidth=2)
+axes[1].set_xlabel('time (s)')
+axes[1].set_ylabel('radius r (m)')
 axes[1].set_title('Radial Distance vs Time')
 axes[1].grid(True)
 
+Energy_steps = np.arange(len(E))
+plt.figure(figsize=(6, 4))  
+plt.plot(rs, E, color='tab:purple', linewidth=2)
+plt.xlabel('r')
+plt.ylabel('energy E')
+plt.title('Total Energy vs Time')
+plt.grid(True)
 """acc_steps = np.arange(len(acx))
 axes[2].plot(acc_steps, acx, color='tab:red', linewidth=2)
 axes[2].set_xlabel('time step')
