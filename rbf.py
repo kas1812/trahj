@@ -3,7 +3,8 @@ import data_gen as dg
 from scipy.interpolate import RBFInterpolator
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-trasj_data = dg.traj_fam()
+k =5
+trasj_data = dg.traj_fam(k)
 
 all_x, all_y, all_v = [], [], []
 for x_values, y_values, rs, vsx, vsy, E in trasj_data:
@@ -23,21 +24,24 @@ all_v = np.concatenate(all_v)
 print(f"Data points: {len(all_x)}")
 print(f"Potential values: {len(all_v)}")
 r_fit = np.sqrt(all_x**2 + all_y**2)
-mask = (r_fit > 0.1) & (r_fit < 5.0)
+mask = (r_fit < 5.0)
 if not np.any(mask):
     raise ValueError('The radius mask selected no training points.')
 
 points = np.column_stack((all_x[mask], all_y[mask]))
 rbf_fit = RBFInterpolator(points, all_v[mask], kernel='thin_plate_spline', neighbors=10, smoothing=0.0)
 
-xg, yg = np.meshgrid(np.linspace(all_x.min(), all_x.max(), 100), np.linspace(all_y.min(), all_y.max(), 100))
+xg, yg = np.meshgrid(np.linspace(all_x[mask].min(), all_x[mask].max(), 100), np.linspace(all_y[mask].min(), all_y[mask].max(), 100))
 query = np.column_stack([xg.ravel(), yg.ravel()])
 v_pred = rbf_fit(query).reshape(xg.shape)
 r_grid = np.sqrt(xg**2 + yg**2)
-v_true = -3/r_grid
+v_true = -k/r_grid
 figg = plt.figure(figsize=(13,6))
 ax1 = figg.add_subplot(1,2,1, projection ='3d')
 ax1.plot_surface(xg, yg, v_pred, cmap='viridis', edgecolor='none', alpha=0.9)
+ax2 = figg.add_subplot(1,2,2, projection='3d')
+ax2.plot_surface(xg, yg, v_true, cmap='viridis', edgecolor='none')
+print( np.max(E) - np.min(E))
 '''
 plt.figure(figsize=(7, 6))
 plt.contourf(xg, yg, v_pred, levels=50, cmap='viridis')
