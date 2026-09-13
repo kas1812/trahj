@@ -14,8 +14,8 @@ def potential_function(k):
 dt = 0.01
 def generate_data(k=3, x=1.0, y=0.0, vx=0.0, vy=1.7, dt=0.01):
     rs = [np.sqrt(x**2 + y**2)]
-    x_values = [x]
-    y_values = [y]
+    x_values = []
+    y_values = []
     vsx = []
     vsy =[]
     E = [0]
