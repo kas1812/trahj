@@ -48,6 +48,8 @@ def traj_fam():
         E_target = np.random.uniform(-3, -1)
         theta = np.random.uniform(0, 2*np.pi)
         speed = np.sqrt(2*(E_target + 3/1))
+        if speed **2 <0.3:
+            continue
         x0 = 1 * np.cos(theta)
         y0 = 1*np.sin(theta)
         v_x = -speed *np.sin(theta)

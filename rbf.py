@@ -2,6 +2,7 @@ import numpy as np
 import data_gen as dg
 from scipy.interpolate import RBFInterpolator
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 trasj_data = dg.traj_fam()
 
 all_x, all_y, all_v = [], [], []
@@ -32,11 +33,17 @@ rbf_fit = RBFInterpolator(points, all_v[mask], kernel='thin_plate_spline', neigh
 xg, yg = np.meshgrid(np.linspace(all_x.min(), all_x.max(), 100), np.linspace(all_y.min(), all_y.max(), 100))
 query = np.column_stack([xg.ravel(), yg.ravel()])
 v_pred = rbf_fit(query).reshape(xg.shape)
-
+r_grid = np.sqrt(xg**2 + yg**2)
+v_true = -3/r_grid
+figg = plt.figure(figsize=(13,6))
+ax1 = figg.add_subplot(1,2,1, projection ='3d')
+ax1.plot_surface(xg, yg, v_pred, cmap='viridis', edgecolor='none', alpha=0.9)
+'''
 plt.figure(figsize=(7, 6))
 plt.contourf(xg, yg, v_pred, levels=50, cmap='viridis')
 plt.colorbar(label='Potential V')
 plt.scatter(all_x[mask], all_y[mask], c='red', s=1, alpha=0.5)
 plt.title('RBF Interpolated Potential Function')
-plt.gca()
+plt.gca()'''
+plt.tight_layout()
 plt.show()
