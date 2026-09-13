@@ -12,6 +12,7 @@ def potential_function(k):
     force_eval_y = sp.lambdify((x, y), F_y, 'numpy')
     return potential_eval, force_eval_x, force_eval_y
 dt = 0.01
+
 def generate_data(k=3, x=1.0, y=0.0, vx=0.0, vy=1.7, dt=0.01):
     rs = [np.sqrt(x**2 + y**2)]
     x_values = []
@@ -45,8 +46,13 @@ def traj_fam():
     trajs = []
     for i in range(num_targets):
         E_target = np.random.uniform(-3, -1)
-        vy = np.sqrt(2*(E_target + 3/np.sqrt(1**2 + 0.0**2)))
-        x_values, y_values, rs, vsx, vsy, E = generate_data(k=3, x=1.0, y=0.0, vx=0.0, vy=vy, dt=0.01)
+        theta = np.random.uniform(0, 2*np.pi)
+        speed = np.sqrt(2*(E_target + 3/1))
+        x0 = 1 * np.cos(theta)
+        y0 = 1*np.sin(theta)
+        v_x = -speed *np.sin(theta)
+        v_y = speed *np.cos(theta)
+        x_values, y_values, rs, vsx, vsy, E = generate_data(k=3, x=x0, y=y0, vx=v_x, vy=v_y, dt=0.01)
         trajs.append((x_values, y_values, rs, vsx, vsy, E))
     return trajs
 
