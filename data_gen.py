@@ -1,6 +1,7 @@
 import sympy as sp
 import numpy as np
 import matplotlib.pyplot as plt
+np.random.seed(42)
 def potential_function(k):
     x, y = sp.symbols('x y') 
     r = sp.sqrt(x**2 + y**2)
@@ -13,7 +14,7 @@ def potential_function(k):
     return potential_eval, force_eval_x, force_eval_y
 dt = 0.01
 
-def generate_data(k=3, x=1.0, y=0.0, vx=0.0, vy=1.7, dt=0.01):
+def generate_data(k, x, y, vx, vy, dt):
     rs = [np.sqrt(x**2 + y**2)]
     x_values = []
     y_values = []
@@ -41,20 +42,29 @@ def generate_data(k=3, x=1.0, y=0.0, vx=0.0, vy=1.7, dt=0.01):
         vsy.append(vy)
     return x_values, y_values, rs, vsx, vsy, E
 
-def traj_fam():
-    num_targets = 100
+def traj_fam(k):
+    num_targets = 2000
     trajs = []
     for i in range(num_targets):
-        E_target = np.random.uniform(-3, -1)
+        E_target = np.random.uniform(-7, 2)
         theta = np.random.uniform(0, 2*np.pi)
-        speed = np.sqrt(2*(E_target + 3/1))
-        if speed **2 <0.3:
+        speed = np.sqrt(2*(E_target + k/1))
+        if speed ** 2 < 0.2:
             continue
         x0 = 1 * np.cos(theta)
-        y0 = 1*np.sin(theta)
+        y0 = 1 * np.sin(theta)
         v_x = -speed *np.sin(theta)
-        v_y = speed *np.cos(theta)
-        x_values, y_values, rs, vsx, vsy, E = generate_data(k=3, x=x0, y=y0, vx=v_x, vy=v_y, dt=0.01)
+        v_y = speed *np.cos(theta) 
+        x_values, y_values, rs, vsx, vsy, E = generate_data(k, x0, y0, v_x, v_y, dt)
         trajs.append((x_values, y_values, rs, vsx, vsy, E))
     return trajs
 
+frames = traj_fam(5)
+for trajectory in frames:
+    x_values, y_values, *_ = trajectory
+    plt.plot(x_values, y_values)
+
+plt.xlabel("x")
+plt.ylabel("y")
+plt.axis("equal")
+plt.show()
