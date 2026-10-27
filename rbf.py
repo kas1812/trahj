@@ -5,15 +5,17 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 k =5
 trasj_data = dg.traj_fam(k)
-
+d_t =0.01
 all_x, all_y, all_v = [], [], []
-for x_values, y_values, rs, vsx, vsy, E in trasj_data:
+for x_values, y_values, rs, vsx, vsy, E, a_x, a_y in trasj_data:
     x_arr = np.array(x_values)
     y_arr = np.array(y_values)
     vx_arr=np.array(vsx)
     vy_arr=np.array(vsy)
-    E_arr=np.array(E[1:])
-    V_est = E_arr - 0.5 * (vx_arr**2 + vy_arr**2)
+    #E_arr=np.array(E[1:])
+    F = np.sqrt(np.array(a_x)**2 + np.array(a_y)**2)
+    V_est = - F * d_t
+    #V_est = E_arr - 0.5 * (vx_arr**2 + vy_arr**2)
     all_x.append(x_arr)
     all_y.append(y_arr)
     all_v.append(V_est)
@@ -41,6 +43,8 @@ ax1 = figg.add_subplot(1,2,1, projection ='3d')
 ax1.plot_surface(xg, yg, v_pred, cmap='viridis', edgecolor='none', alpha=0.9)
 ax2 = figg.add_subplot(1,2,2, projection='3d')
 ax2.plot_surface(xg, yg, v_true, cmap='viridis', edgecolor='none')
+ax1.set_title('RBF Interpolated Potential Function')
+ax2.set_title('True Potential Function')
 print( np.max(E) - np.min(E))
 '''
 plt.figure(figsize=(7, 6))

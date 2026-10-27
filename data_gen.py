@@ -20,6 +20,8 @@ def generate_data(k, x, y, vx, vy, dt):
     y_values = []
     vsx = []
     vsy =[]
+    ax = []
+    ay= []
     E = [0]
     potential_eval, force_eval_x, force_eval_y = potential_function(k)
 
@@ -40,7 +42,9 @@ def generate_data(k, x, y, vx, vy, dt):
         rs.append(r_new)
         vsx.append(vx)
         vsy.append(vy)
-    return x_values, y_values, rs, vsx, vsy, E
+        ax.append(a_x)
+        ay.append(a_y)
+    return x_values, y_values, rs, vsx, vsy, E, ax, ay
 
 def traj_fam(k):
     num_targets = 2000
@@ -55,8 +59,8 @@ def traj_fam(k):
         y0 = 1 * np.sin(theta)
         v_x = -speed *np.sin(theta)
         v_y = speed *np.cos(theta) 
-        x_values, y_values, rs, vsx, vsy, E = generate_data(k, x0, y0, v_x, v_y, dt)
-        trajs.append((x_values, y_values, rs, vsx, vsy, E))
+        x_values, y_values, rs, vsx, vsy, E, a_x, a_y = generate_data(k, x0, y0, v_x, v_y, dt)
+        trajs.append((x_values, y_values, rs, vsx, vsy, E, a_x, a_y))
     return trajs
 
 frames = traj_fam(5)
