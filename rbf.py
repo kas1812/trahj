@@ -13,11 +13,14 @@ for x_values, y_values, rs, vsx, vsy, E, a_x, a_y in trasj_data:
     vx_arr=np.array(vsx)
     vy_arr=np.array(vsy)
     #E_arr=np.array(E[1:])
-    F = np.sqrt(np.array(a_x)**2 + np.array(a_y)**2)
-    V_est = - F * d_t
+    a_X = (x_arr[2:] - 2*x_arr[1:-1] + x_arr[:-2] )/ d_t**2
+    a_Y = (y_arr[2:] - 2*y_arr[1:-1] + y_arr[:-2]) / d_t**2
+    dx, dy = np.diff(x_arr), np.diff(y_arr)
+    dV = -(a_X * dx[:-1] + a_Y * dy[:-1])
+    V_est =-k + np.cumsum(dV)
     #V_est = E_arr - 0.5 * (vx_arr**2 + vy_arr**2)
-    all_x.append(x_arr)
-    all_y.append(y_arr)
+    all_x.append(x_arr[1:-1])
+    all_y.append(y_arr[1:-1])
     all_v.append(V_est)
 
 all_x = np.concatenate(all_x)

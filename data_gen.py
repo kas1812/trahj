@@ -27,7 +27,7 @@ def generate_data(k, x, y, vx, vy, dt):
 
     a_x = force_eval_x(x, y)
     a_y = force_eval_y(x, y)
-    for i in range(600):
+    for i in range(2000):
         x += vx*dt + 0.5 * a_x * dt**2
         y += vy*dt + 0.5 * a_y * dt**2
         ax_new = force_eval_x(x, y)
