@@ -16,8 +16,8 @@ dt = 0.01
 
 def generate_data(k, x, y, vx, vy, dt):
     rs = [np.sqrt(x**2 + y**2)]
-    x_values = []
-    y_values = []
+    x_values = [x]
+    y_values = [y]
     vsx = []
     vsy =[]
     ax = []
@@ -47,13 +47,13 @@ def generate_data(k, x, y, vx, vy, dt):
     return x_values, y_values, rs, vsx, vsy, E, ax, ay
 
 def traj_fam(k):
-    num_targets = 2000
+    num_targets = 9000
     trajs = []
     for i in range(num_targets):
         E_target = np.random.uniform(-7, 2)
         theta = np.random.uniform(0, 2*np.pi)
         speed = np.sqrt(2*(E_target + k/1))
-        if speed ** 2 < 0.2:
+        if not np.isfinite(speed) or speed ** 2 < 0.2:
             continue
         x0 = 1 * np.cos(theta)
         y0 = 1 * np.sin(theta)
@@ -67,8 +67,8 @@ frames = traj_fam(5)
 for trajectory in frames:
     x_values, y_values, *_ = trajectory
     plt.plot(x_values, y_values)
-
-plt.xlabel("x")
-plt.ylabel("y")
-plt.axis("equal")
-plt.show()
+if __name__ == "__main__":
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.axis("equal")
+    plt.show()

@@ -15,10 +15,15 @@ for x_values, y_values, rs, vsx, vsy, E, a_x, a_y in trasj_data:
     #E_arr=np.array(E[1:])
     a_X = (x_arr[2:] - 2*x_arr[1:-1] + x_arr[:-2] )/ d_t**2
     a_Y = (y_arr[2:] - 2*y_arr[1:-1] + y_arr[:-2]) / d_t**2
-    dx, dy = np.diff(x_arr), np.diff(y_arr)
-    dV = -(a_X * dx[:-1] + a_Y * dy[:-1])
-    V_est =-k + np.cumsum(dV)
+    xs, ys = x_arr[1:-1], y_arr[1:-1]
+    if np.hypot(xs, ys).min() < 0.088:
+        continue
+    dx, dy = np.diff(xs), np.diff(ys)
+    dV0 = -(a_X[0] * (x_arr[1] - x_arr[0]) + a_Y[0] * (y_arr[1] - y_arr[0]))
+    dV = -(a_X[:-1] + a_X[1:])*dx/2 - (a_Y[:-1] + a_Y[1:])*dy/2
+    V_est = -k + dV0 + np.concatenate(([0], np.cumsum(dV)))
     #V_est = E_arr - 0.5 * (vx_arr**2 + vy_arr**2)
+
     all_x.append(x_arr[1:-1])
     all_y.append(y_arr[1:-1])
     all_v.append(V_est)
@@ -49,12 +54,5 @@ ax2.plot_surface(xg, yg, v_true, cmap='viridis', edgecolor='none')
 ax1.set_title('RBF Interpolated Potential Function')
 ax2.set_title('True Potential Function')
 print( np.max(E) - np.min(E))
-'''
-plt.figure(figsize=(7, 6))
-plt.contourf(xg, yg, v_pred, levels=50, cmap='viridis')
-plt.colorbar(label='Potential V')
-plt.scatter(all_x[mask], all_y[mask], c='red', s=1, alpha=0.5)
-plt.title('RBF Interpolated Potential Function')
-plt.gca()'''
 plt.tight_layout()
 plt.show()
